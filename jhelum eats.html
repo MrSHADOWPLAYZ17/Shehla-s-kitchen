@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jhelum Eats - Food Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif; }
+  body { background:#f8f4ff; color:#333; }
+  header { background:#6a0dad; color:#fff; display:flex; justify-content:space-between; align-items:center; padding:15px 20px; position:sticky; top:0; z-index:100; }
+  header h1 { font-size:24px; }
+  .search-login { display:flex; gap:10px; }
+  .search-login input[type="text"] { padding:5px 10px; border-radius:5px; border:none; width:200px; }
+  .search-login button { padding:6px 12px; background:#4b0082; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+  .search-login button:hover { background:#6a0dad; }
+  .hero { background:#e6ccff; padding:60px 20px; text-align:center; border-bottom-left-radius:40px; border-bottom-right-radius:40px; }
+  .hero h2 { font-size:36px; color:#4b0082; margin-bottom:15px; }
+  .hero p { font-size:18px; margin-bottom:20px; }
+  .hero button { background:#6a0dad; color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; }
+  .hero button:hover { background:#4b0082; }
+  .foods { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:25px; padding:40px 20px; }
+  .food-card { background:#fff; border-radius:15px; box-shadow:0 5px 12px rgba(0,0,0,0.1); text-align:center; transition:0.3s; }
+  .food-card:hover { transform:translateY(-5px); }
+  .food-card img { width:100%; height:180px; object-fit:cover; }
+  .food-card h3 { margin:15px 0; color:#6a0dad; }
+  .food-card p { padding:0 15px 15px; font-size:14px; }
+  .food-card button { margin-bottom:15px; background:#6a0dad; color:#fff; border:none; padding:8px 18px; border-radius:8px; cursor:pointer; }
+  .food-card button:hover { background:#4b0082; }
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:300; }
+  .modal-content { background:#fff; padding:30px; border-radius:10px; width:90%; max-width:400px; text-align:center; position:relative; }
+  .modal-content input { width:90%; padding:8px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+  .modal-content button { padding:10px 20px; background:#6a0dad; color:#fff; border:none; border-radius:5px; cursor:pointer; margin-top:10px; }
+  .modal-content button:hover { background:#4b0082; }
+  .close { position:absolute; top:10px; right:20px; font-size:24px; color:#fff; cursor:pointer; }
+  .admin-panel { display:none; position:fixed; top:50px; right:20px; background:#fff; padding:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.2); z-index:400; width:300px; max-height:90vh; overflow-y:auto; }
+  .admin-panel h3 { color:#6a0dad; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  .plus-btn { background:#4b0082; color:#fff; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:20px; display:flex; justify-content:center; align-items:center; }
+  .plus-btn:hover { background:#6a0dad; }
+  #addRecipeSection { display:none; margin-bottom:15px; }
+  #addRecipeSection input { width:90%; margin-bottom:5px; padding:6px; border-radius:5px; border:1px solid #ccc; }
+  #addRecipeSection button { width:95%; margin-top:5px; }
+  .user-list { margin-top:10px; }
+  .user-item { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:5px; background:#f0e6ff; border-radius:5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Jhelum Eats</h1>
+  <div class="search-login">
+    <input type="text" id="searchBar" placeholder="Search food...">
+    <button onclick="searchFood()">Search</button>
+    <button onclick="openLogin()">Login / Signup</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h2>Delicious Food Delivered Fast in Jhelum</h2>
+  <p>Order from your favorite restaurants and get it delivered to your doorstep.</p>
+  <button onclick="orderNow('Full Menu')">Order Now</button>
+</section>
+
+<section id="foods" class="foods">
+  <div class="food-card" data-name="Chicken Kabab">
+    <img src="https://via.placeholder.com/300x200.png?text=Chicken+Kabab" alt="Chicken Kabab">
+    <h3>Chicken Kabab</h3>
+    <p>Spicy and juicy chicken kababs grilled to perfection.</p>
+    <button onclick="orderNow('Chicken Kabab')">Order Now</button>
+  </div>
+  <div class="food-card" data-name="Beef Kabab">
+    <img src="https://via.placeholder.com/300x200.png?text=Beef+Kabab" alt="Beef Kabab">
+    <h3>Beef Kabab</h3>
+    <p>Succulent beef kababs marinated in aromatic spices.</p>
+    <button onclick="orderNow('Beef Kabab')">Order Now</button>
+  </div>
+  <div class="food-card" data-name="Chicken Biryani">
+    <img src="https://via.placeholder.com/300x200.png?text=Chicken+Biryani" alt="Chicken Biryani">
+    <h3>Chicken Biryani</h3>
+    <p>Flavored basmati rice cooked with tender chicken and spices.</p>
+    <button onclick="orderNow('Chicken Biryani')">Order Now</button>
+  </div>
+  <div class="food-card" data-name="Shami Kabab">
+    <img src="https://via.placeholder.com/300x200.png?text=Shami+Kabab" alt="Shami Kabab">
+    <h3>Shami Kabab</h3>
+    <p>Delicious minced meat kababs with subtle spices and herbs.</p>
+    <button onclick="orderNow('Shami Kabab')">Order Now</button>
+  </div>
+  <div class="food-card" data-name="Noodles Kabab">
+    <img src="https://via.placeholder.com/300x200.png?text=Noodles+Kabab" alt="Noodles Kabab">
+    <h3>Noodles Kabab</h3>
+    <p>Fusion kabab made with stir-fried noodles and meat.</p>
+    <button onclick="orderNow('Noodles Kabab')">Order Now</button>
+  </div>
+</section>
+
+<!-- Login/Signup Modal -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h2>Login / Signup</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Sign Up</button>
+  </div>
+  <span class="close" onclick="closeLogin()">&times;</span>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <h3>
+    Admin Panel
+    <button class="plus-btn" onclick="toggleAddRecipe()">+</button>
+  </h3>
+
+  <!-- Add Recipe Section -->
+  <div id="addRecipeSection">
+    <input type="text" id="newFoodName" placeholder="Food Name">
+    <input type="text" id="newFoodDesc" placeholder="Food Description">
+    <input type="text" id="newFoodImg" placeholder="Image URL">
+    <button onclick="addFood()">Add Recipe</button>
+  </div>
+
+  <h4>Users:</h4>
+  <div class="user-list" id="userList"></div>
+</div>
+
+<script>
+const deliveryNumber = '+923155163719';
+let users = JSON.parse(localStorage.getItem('users')) || {};
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+function orderNow(item) {
+  if(!currentUser) { openLogin(); alert('Please login first to place order.'); return; }
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile) window.location.href = `tel:${deliveryNumber}`;
+  else { const message = encodeURIComponent(`Hello, I want to order: ${item}`); window.open(`https://wa.me/${deliveryNumber}?text=${message}`, '_blank'); }
+}
+
+function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
+
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if(users[username] && users[username].password === password) {
+    currentUser = { username, isAdmin: users[username].isAdmin };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    alert('Login successful!');
+    closeLogin();
+    if(currentUser.isAdmin) { document.getElementById('adminPanel').style.display = 'block'; renderUserList(); }
+  } else { alert('Incorrect username or password. If new, please sign up.'); }
+}
+
+function signup() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if(!username || !password) { alert('Enter username and password!'); return; }
+  if(users[username]) { alert('Username already exists. Please login.'); return; }
+  users[username] = { password: password, isAdmin: false };
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('Sign up successful! You can now login.');
+}
+
+function searchFood() {
+  const query = document.getElementById('searchBar').value.toLowerCase();
+  document.querySelectorAll('.food-card').forEach(card => {
+    const name = card.getAttribute('data-name').toLowerCase();
+    card.style.display = name.includes(query) ? 'block' : 'none';
+  });
+}
+
+// Admin Functions
+function toggleAddRecipe() {
+  const section = document.getElementById('addRecipeSection');
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+function addFood() {
+  const name = document.getElementById('newFoodName').value;
+  const desc = document.getElementById('newFoodDesc').value;
+  const img = document.getElementById('newFoodImg').value;
+  if(!name || !desc || !img) { alert('Please fill all fields'); return; }
+  const foodContainer = document.getElementById('foods');
+  const card = document.createElement('div');
+  card.className = 'food-card';
+  card.setAttribute('data-name', name);
+  card.innerHTML = `<img src="${img}" alt="${name}"><h3>${name}</h3><p>${desc}</p><button onclick="orderNow('${name}')">Order Now</button>`;
+  foodContainer.appendChild(card);
+  alert('Recipe added successfully!');
+  document.getElementById('newFoodName').value = '';
+  document.getElementById('newFoodDesc').value = '';
+  document.getElementById('newFoodImg').value = '';
+}
+
+function renderUserList() {
+  const list = document.getElementById('userList');
+  list.innerHTML = '';
+  for(let username in users) {
+    const div = document.createElement('div');
+    div.className = 'user-item';
+    div.innerHTML = `<span>${username} ${users[username].isAdmin ? '(Admin)' : ''}</span>${!users[username].isAdmin ? `<button onclick="makeAdmin('${username}')">Make Admin</button>` : ''}`;
+    list.appendChild(div);
+  }
+}
+
+function makeAdmin(username) {
+  users[username].isAdmin = true;
+  localStorage.setItem('users', JSON.stringify(users));
+  alert(`${username} is now an admin!`);
+  renderUserList();
+}
+
+// Show admin panel if already logged in as admin
+if(currentUser && currentUser.isAdmin) { document.getElementById('adminPanel').style.display = 'block'; renderUserList(); }
+</script>
+
+</body>
+</html>
